@@ -26,3 +26,8 @@ services:
   api-php-fpm:
     image: ${REGISTRY}/loadcrm-api-php-fpm:${IMAGE_TAG}
     restart: always
+    enviroment:
+      APP_DEBUG: 0
+
+  api-php-cli:
+    image: ${REGISTRY}/loadcrm-api-php-cli:${IMAGE_TAG}
