@@ -33,6 +33,7 @@ services:
       dockerfile: development/php-fpm/Dockerfile
     environment:
       APP_DEBUG: 1
+      PHP_IDE_CONFIG: serverName=API
     volumes:
       - ./api:/app
 
