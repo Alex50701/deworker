@@ -2,16 +2,19 @@
 
 namespace App\Console;
 
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 class HelloCommand extends \Symfony\Component\Console\Command\Command
 {
-    protected function configure():void
+    protected function configure(): void
     {
         $this
             ->setName('hello')
             ->setDescription('Test decription');
     }
 
-    protected function execute(\Symfony\Component\Console\Input\InputInterface $input, \Symfony\Component\Console\Output\OutputInterface $output):int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('<info>Hello!</info>');
         return 0;

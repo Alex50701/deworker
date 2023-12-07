@@ -2,6 +2,7 @@ init: docker-down-clear docker-down docker-pull docker-build docker-up api-init
 up: docker-up
 down: docker-down
 restart: down up
+lint: api-lint
 
 docker-up:
 	docker compose up -d
@@ -38,6 +39,13 @@ api-init: api-composer-install
 
 api-composer-install:
 	docker-compose run --rm api-php-cli composer install
+
+api-lint:
+	docker-compose run --rm api-php-cli composer lint
+	docker-compose run --rm api-php-cli composer cs-check
+
+analyze:
+	docker-compose run --rm api-php-cli composer psalm
 
 deploy:
 	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'rm -rf site_${BUILD_NUMBER}'
