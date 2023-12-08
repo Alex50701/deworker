@@ -1,8 +1,10 @@
-init: docker-down-clear docker-down docker-pull docker-build docker-up api-init
+init: docker-down-clear api-clear docker-down docker-pull docker-build docker-up api-init
 up: docker-up
 down: docker-down
 restart: down up
 lint: api-lint
+check: lint analyze api-test
+fix: api-fix
 
 docker-up:
 	docker compose up -d
@@ -42,10 +44,19 @@ api-composer-install:
 
 api-lint:
 	docker-compose run --rm api-php-cli composer lint
-	docker-compose run --rm api-php-cli composer cs-check
+	docker-compose run --rm api-php-cli composer php-cs-fixer fix -- --dry-run --diff
 
 analyze:
 	docker-compose run --rm api-php-cli composer psalm
+
+api-test:
+	docker-compose run --rm api-php-cli composer test
+
+api-fix:
+	docker-compose run --rm api-php-cli composer php-cs-fixer fix
+
+api-clear:
+	docker run --rm -v ${PWD}/api:/app -w /app alpine sh -c 'rm -rf var/cache/* var/log/* var/test/*'
 
 deploy:
 	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'rm -rf site_${BUILD_NUMBER}'

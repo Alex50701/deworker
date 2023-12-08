@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class HelloCommand extends \Symfony\Component\Console\Command\Command
+final class HelloCommand extends \Symfony\Component\Console\Command\Command
 {
     protected function configure(): void
     {
