@@ -2,30 +2,16 @@
 
 declare(strict_types=1);
 
-use Psr\Http\Message\ResponseFactoryInterface;
-use Slim\Factory\AppFactory;
+use Psr\Container\ContainerInterface;
+use Slim\App;
 
 http_response_code(500);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$builder = new DI\ContainerBuilder();
+/** @var ContainerInterface $container */
+$container = require __DIR__ . '/../config/container.php';
 
-$builder->addDefinitions([
-    'config' => [
-        'env' => getenv('APP_ENV') ?? 'prod',
-        'debug' => (bool)getenv('APP_DEBUG'),
-    ],
-    ResponseFactoryInterface::class => Di\get(Slim\Psr7\Factory\ResponseFactory::class),
-]);
-
-$container = $builder->build();
-
-$app = AppFactory::createFromContainer($container);
-
-$config = ($container->get('config'));
-$app->addErrorMiddleware($config['debug'], $config['env'] !== 'test', true);
-
-(require __DIR__ . '/../config/routes.php')($app);
-
+/** @var App $app */
+$app = (require __DIR__ . '/../config/app.php')($container);
 $app->run();
