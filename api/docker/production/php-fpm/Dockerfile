@@ -1,5 +1,5 @@
 ### Врмененная сборка чтобы собрать зависимости ###
-FROM php:7.4-cli-alpine AS builder
+FROM php:8.1-fpm-alpine3.16 AS builder
 
 RUN apk add --no-cache unzip
 
@@ -17,7 +17,7 @@ RUN composer install --no-dev --prefer-dist --no-progress --no-suggest --optimiz
 
 ### FPM ###
 
-FROM php:7.4-fpm-alpine
+FROM php:8.1-fpm-alpine3.16
 
 RUN docker-php-ext-install opcache
 

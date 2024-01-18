@@ -1,10 +1,19 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Auth;
 
+use Doctrine\ORM\EntityManagerInterface;
 
-interface Flusher
+final class Flusher
 {
-    public function flush(): void;
+    public function __construct(private readonly EntityManagerInterface $em)
+    {
+    }
+
+    public function flush(): void
+    {
+        $this->em->flush();
+    }
 }

@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 final class JsonResponseTest extends TestCase
 {
     /**
-     * @covers  JsonResponse
+     * @covers  \JsonResponse
      */
     public function testInt(): void
     {

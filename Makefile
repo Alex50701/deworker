@@ -3,8 +3,9 @@ up: docker-up
 down: docker-down
 restart: down up
 lint: api-lint
-check: lint analyze api-test
+check: lint analyze validate-schema api-test
 fix: api-fix
+validate-schema: api-validate-schema
 
 docker-up:
 	docker compose up -d
@@ -37,7 +38,7 @@ build-api:
 try-build:
 	REGISTRY=localhost IMAGE_TAG=0 make build
 
-api-init: api-composer-install
+api-init: api-composer-install api-wait-db api-migrations api-fixtures
 
 api-composer-install:
 	docker-compose run --rm api-php-cli composer install
@@ -57,6 +58,18 @@ api-fix:
 
 api-clear:
 	docker run --rm -v ${PWD}/api:/app -w /app alpine sh -c 'rm -rf var/cache/* var/log/* var/test/*'
+
+api-migrations:
+	docker compose run --rm api-php-cli composer app migrations:migrate -- --no-interaction
+
+api-validate-schema:
+	docker compose run --rm api-php-cli composer app orm:validate-schema
+
+api-wait-db:
+	docker compose run --rm api-php-cli wait-for-it api-postgres:5432 -t 30
+
+api-fixtures:
+	docker compose run --rm api-php-cli composer app fixtures:load
 
 deploy:
 	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'rm -rf site_${BUILD_NUMBER}'
