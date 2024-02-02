@@ -16,7 +16,9 @@
     "doctrine/orm": "^2.17",
     "laminas/laminas-config-aggregator": "^1.9",
     "symfony/cache": "^5.4",
-    "doctrine/migrations": "^3.7"
+    "doctrine/migrations": "^3.7",
+    "monolog/monolog": "^3.5",
+    "symfony/validator": "^6.4"
   },
   "autoload": {
     "psr-4": {

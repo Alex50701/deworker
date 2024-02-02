@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace Auth\Command\SignUpByEmail\Request;
 
 use App\Auth\Command\SignUpByEmail\Request\Command;
+use App\Auth\Entity\User\UserRepository;
 use Auth\Entity\User\Email;
+use Auth\Entity\User\Id;
+use Auth\Entity\User\Token;
 use Auth\Entity\User\User;
-use Auth\Entity\User\UserRepository;
 use Auth\Flusher;
+use Auth\Service\JoinConfirmationSender;
 use Auth\Service\PasswordHasher;
 use Auth\Service\Tokenizer;
 use DateTimeImmutable;
 use DomainException;
+use Ramsey\Uuid\Uuid;
 
 final class Handler
 {
@@ -45,18 +49,20 @@ final class Handler
         }
 
         $date = new DateTimeImmutable();
+        $token  = new Token(Uuid::uuid4()->toString(), $date->modify('+1 day'));
 
-        $user = new User(
+        $user = User::create(
+            Id::generate(),
             $date,
-            $email,
-            $this->hasher->hash($command->password),
-            $token = $this->tokenizer->generate($date)
+            new Email($command->email),
+            $command->password,
+            $token
         );
 
         $this->users->add($user);
 
         $this->flusher->flush();
 
-        $this->sender->send($email, $token);
+        $this->sender->send($email, $token->getValue());
     }
 }
